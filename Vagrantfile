@@ -6,6 +6,7 @@ Vagrant.configure("2") do |config|
   config.berkshelf.berksfile_path = "./cookbooks/baseline-linux/Berksfile"
   config.vm.provision "chef_solo" do |chef|
     chef.add_recipe "baseline-linux::default"
+    chef.arguments = "--chef-license accept"
   end
   config.vm.host_name = 'TEST-APP1'
 end
