@@ -14,4 +14,4 @@ A vagrant file is included in this repository for testing. In order to build and
 Don't worry, vagrant will install all the various packages on the Linux VM that are needed and the makefile will handle compiling the project
 
 ## Maintainers
-- [Robert Thurston](rdt@redoubt.io)
+- [Robert Thurston](mailto:rdt@redoubt.io)
