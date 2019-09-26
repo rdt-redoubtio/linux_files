@@ -7,3 +7,10 @@
 yum_package 'gcc'
 
 yum_package 'make'
+
+directory '/vagrant/bin' do
+    owner 'vagrant'
+    group 'vagrant'
+    mode '0755'
+    action :create
+end
