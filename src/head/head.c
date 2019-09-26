@@ -6,25 +6,26 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-int openFile(int argc, char *argv[])
+//openFile()
+// Given a file path (from command line arguements), open a file and return a file descriptor
+int openFile(char *argv[])
 {
-    int fileDescriptor;
-    fileDescriptor = 0;
+    int fileDescriptor = 0;
     fileDescriptor = open(argv[1],O_RDONLY);
     return fileDescriptor;
 }
 
+// sizeOfFile()
+// Given a file path, determine the size of the file in bytes
 size_t sizeOfFile(const char * filePath)
 {
     struct stat fileStat;
     stat(filePath, &fileStat);
-    if(fileStat.st_size == 0)
-    {
-        return 0;
-    }
     return fileStat.st_size;
 }
 
+// readFile()
+// Given a file descriptor of an open file, a pre-allocated character array and the size of the file, read the contents of the file into the character array
 int readFile(int fileDescriptor, char * buffer, size_t bytesToRead)
 {
     ssize_t bytesRead;
@@ -36,14 +37,37 @@ int readFile(int fileDescriptor, char * buffer, size_t bytesToRead)
     return 1;
 }
 
-int printLine(char * buffer, size_t bufferSize, int line)
+// findNextEndOfLine()
+// Given a character array, size of the array and an initial offset to search from, return the next offset which is a line return character \r
+int findNextEndOfLine(char * buffer, size_t bufferSize, int initialOffset)
 {
-    size_t i = 0;
-    while(i < bufferSize)
+    int i = initialOffset;
+    while (i<bufferSize)
     {
-        write(STDOUT_FILENO, buffer, 1);
-        i++;
+        if(buffer[i] == '\n') {
+            return i;
+        }       
+        i = i + 1; 
     }
+    return;
+}
+
+//printBufferHead()
+// Given a character array, the size of the array and a line number, output the contents of the file line by line until you hit the line number targeted.
+int printBufferHead(char * buffer, size_t bufferSize, int lastLine)
+{
+    int currentLine = 1;
+    int lastEol = 0;
+    int nextEol = 0;
+    while(currentLine <= lastLine)
+    {
+        write(STDOUT_FILENO, "\n", 1);
+        nextEol = findNextEndOfLine(buffer, bufferSize, lastEol);
+        write(STDOUT_FILENO, buffer+lastEol, nextEol-lastEol);
+        lastEol = nextEol + 1;
+        currentLine = currentLine + 1;
+    }
+    write(STDOUT_FILENO, "\n", 1);
     return 0;
 }
 
@@ -51,20 +75,23 @@ int main(int argc, char *argv[])
 {
     if(argc != 2)
     {
-        printf("\n Usage: head <filename>\n");
+        write(STDOUT_FILENO,"\nUsage: head <filename>\n\n",25);
         return 1;
     }
     else
     {
         size_t size = sizeOfFile(argv[1]);
-        int fileDescriptor = openFile(argc, argv);
+        int fileDescriptor = openFile(argv);
+
         char * buffer;
         buffer = (char *) malloc(size);
+
         int readStatus = readFile(fileDescriptor, buffer, size);
-        printf("\n");
-        printLine(buffer, size, 1);
-        printf("\n");
+
+        printBufferHead(buffer, size, 10);
+
         free(buffer);
+        close(fileDescriptor);
         return 0;
     }
 }
