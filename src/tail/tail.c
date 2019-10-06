@@ -41,24 +41,24 @@ int readFile(int fileDescriptor, char * buffer, size_t bytesToRead)
 // Given a character array, size of the array and a number of lines, return the array offset for the last character of the last line
 int findIndexLine(char * buffer, size_t bufferSize, int numberOfLines)
 {
-    int i=0;
+    int i=bufferSize;
     int j=0;
-    while(i<bufferSize && j<numberOfLines)
+    while(i>=0 && j<numberOfLines)
     {
         if(buffer[i] == '\n') {
            j++;
         }
-        i++;
+        i--;
     }
     return i;
 }
 
 //printBufferHead()
 // Given a character array, the size of the array and a line number, output the contents of the file line by line until you hit the line number targeted.
-int printBufferHead(char * buffer, size_t bufferSize, int numberOfLines)
+int printBufferTail(char * buffer, size_t bufferSize, int numberOfLines)
 {
-    int last = findIndexLine(buffer, bufferSize, numberOfLines);
-    write(STDOUT_FILENO, buffer, last);
+    int first = findIndexLine(buffer, bufferSize, numberOfLines);
+    write(STDOUT_FILENO, buffer+first, bufferSize);
     return 0;
 }
 
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
         readFile(fileDescriptor, buffer, size);
 
-        printBufferHead(buffer, size, 10);
+        printBufferTail(buffer, size, 10);
 
         free(buffer);
         close(fileDescriptor);
