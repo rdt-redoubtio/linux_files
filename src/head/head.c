@@ -49,7 +49,7 @@ int findNextEndOfLine(char * buffer, size_t bufferSize, int initialOffset)
         }       
         i = i + 1; 
     }
-    return;
+    return bufferSize;
 }
 
 //printBufferHead()
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
         char * buffer;
         buffer = (char *) malloc(size);
 
-        int readStatus = readFile(fileDescriptor, buffer, size);
+        readFile(fileDescriptor, buffer, size);
 
         printBufferHead(buffer, size, 10);
 
