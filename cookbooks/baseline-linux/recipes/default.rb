@@ -8,6 +8,8 @@ yum_package 'gcc'
 
 yum_package 'make'
 
+yum_package 'gdb'
+
 directory '/vagrant/bin' do
     owner 'vagrant'
     group 'vagrant'
